@@ -1,0 +1,32 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mk-challenge-service
+spec:
+  selector:
+    app: mk-challenge
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30061
+  type: NodePort
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mk-challenge-deployment
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mk-challenge
+    spec:
+      containers:
+      - name: mk-challenge
+        image: gcr.io/agosto-k8s-demo/minikube-challenge:latest
+        ports:
+        - containerPort: 80
+        command: ['/main']
+        imagePullPolicy: Always
